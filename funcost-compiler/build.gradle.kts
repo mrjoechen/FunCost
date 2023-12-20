@@ -8,10 +8,9 @@ plugins {
 dependencies {
     implementation(kotlin("gradle-plugin-api"))
     implementation(kotlin("stdlib"))
-    compileOnly("org.jetbrains.kotlin:kotlin-compiler-embeddable")
+    implementation("org.jetbrains.kotlin:kotlin-compiler-embeddable")
     implementation(project(":funcost-annotations"))
     testImplementation(kotlin("test-junit"))
-
     testImplementation("com.github.tschuchortdev:kotlin-compile-testing:1.5.0")
 }
 

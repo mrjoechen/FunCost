@@ -5,7 +5,7 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinJvm) apply false
     id("com.github.gmazzo.buildconfig") version "2.1.0" apply false
     id("com.vanniktech.maven.publish") version "0.25.2" apply false
-//    id("tech.joechen.funcost") version "0.0.1" apply false
+    id("tech.joechen.funcost") version "0.0.1" apply false
 }
 
 

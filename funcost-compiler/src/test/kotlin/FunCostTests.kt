@@ -15,17 +15,18 @@ class FunCostTests {
     fun `test fun cost`() {
         val result = compile(
             sourceFile = SourceFile.kotlin(
-                "main.kt", """ 
-        import tech.joechen.funcost.anno.FunCost      
+                "main.kt",
+                """ 
+        import tech.joechen.funcost.anno.FunCost
 
         fun main() {
-          println(foo())
-          println(foo("Transform", "Kotlin IR"))
+          println(hello())
+          println(hello("Add Cost", "Kotlin IR"))
         }
 
         @FunCost
-        fun foo(param1: String? = "Hello", param2: String? = "World"): String {
-          println("foo called param1=[${'$'}param1], param2=[${'$'}param2]") //注意 $ 需要转义
+        fun hello(param1: String? = "Hello", param2: String? = "World"): String {
+          println("hello called param1=[${'$'}param1], param2=[${'$'}param2]") // $ 需要转义
           return param1 + param2
         }
       """.trimIndent()

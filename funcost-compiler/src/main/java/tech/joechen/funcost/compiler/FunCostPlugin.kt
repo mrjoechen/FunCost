@@ -3,6 +3,7 @@ package tech.joechen.funcost.compiler
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.provider.Provider
+import org.jetbrains.kotlin.config.CompilerConfigurationKey
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilerPluginSupportPlugin
 import org.jetbrains.kotlin.gradle.plugin.SubpluginArtifact
@@ -10,6 +11,20 @@ import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
 import tech.joechen.funcost_compiler.BuildConfig
 
 class FunCostPlugin : KotlinCompilerPluginSupportPlugin {
+
+    companion object {
+        const val OPTION_ENABLE = "enable"
+        const val OPTION_SHOW_INPUT_PARAM = "showInputParam"
+        const val OPTION_SHOW_RETURN = "showReturn"
+        const val OPTION_SHOW_THREAD_NAME = "showThreadName"
+
+
+        val ARG_ENABLE = CompilerConfigurationKey<String>(OPTION_ENABLE)
+        val ARG_SHOW_INPUT_PARAM = CompilerConfigurationKey<String>(OPTION_SHOW_INPUT_PARAM)
+        val ARG_SHOW_RETURN = CompilerConfigurationKey<String>(OPTION_SHOW_RETURN)
+        val ARG_SHOW_THREAD_NAME = CompilerConfigurationKey<String>(OPTION_SHOW_THREAD_NAME)
+    }
+
 
     override fun apply(target: Project) {
         val funCostExtension = target.extensions.create("funcost", FunCostExtension::class.java)
@@ -35,12 +50,13 @@ class FunCostPlugin : KotlinCompilerPluginSupportPlugin {
 
         try {
             val extension = project.extensions.getByType(FunCostExtension::class.java)
-            if (extension.enable) {
-                options += SubpluginOption("enable", "true")
-            }
+
+            options += SubpluginOption(OPTION_ENABLE, if(extension.enable) "true" else "false")
+            options += SubpluginOption(OPTION_SHOW_INPUT_PARAM, if(extension.showInputParam) "true" else "false")
+            options += SubpluginOption(OPTION_SHOW_RETURN, if(extension.showReturn) "true" else "false")
+            options += SubpluginOption(OPTION_SHOW_THREAD_NAME, if(extension.showThreadName) "true" else "false")
         }catch (ex: Exception){
             ex.printStackTrace()
-
         }
         return project.provider { options }
     }

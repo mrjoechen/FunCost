@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
-//    id("tech.joechen.funcost")
+    id("tech.joechen.funcost")
 }
 
 android {
@@ -41,7 +41,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.6"
+        kotlinCompilerExtensionVersion = "1.4.7"
     }
     packaging {
         resources {
@@ -67,6 +67,9 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 }
 
-//funcost{
-//    enable = true
-//}
+funcost {
+    enable = true
+    showInputParam = false
+    showReturn = true
+    showThreadName = false
+}

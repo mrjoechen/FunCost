@@ -35,5 +35,6 @@ open class Logger(private val messageCollector: MessageCollector) {
 
     fun println(level: CompilerMessageSeverity, message: Any?) {
         messageCollector.report(level, "[FunCost] $message")
+        println("[FunCost] $message")
     }
 }
