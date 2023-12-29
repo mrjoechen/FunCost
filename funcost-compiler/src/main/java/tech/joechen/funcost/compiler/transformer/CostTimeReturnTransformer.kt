@@ -12,13 +12,11 @@ import org.jetbrains.kotlin.ir.expressions.IrExpression
 import org.jetbrains.kotlin.ir.expressions.IrReturn
 import org.jetbrains.kotlin.ir.util.render
 import tech.joechen.funcost.compiler.utils.costExit
-import tech.joechen.funcost.compiler.utils.threadName
 
 class CostTimeReturnTransformer(
   private val pluginContext: IrPluginContext,
   private val irFunction: IrFunction,
   private val startTime: IrValueDeclaration,
-  private val thread: IrValueDeclaration? = null,
 ): IrElementTransformerVoidWithContext() {
 
   override fun visitReturn(expression: IrReturn): IrExpression {
@@ -29,9 +27,7 @@ class CostTimeReturnTransformer(
     println("transform return: ")
     return DeclarationIrBuilder(pluginContext, irFunction.symbol).irBlock {
 
-      thread?.let {
-        +threadName(pluginContext, thread)
-      }
+
       if (irFunction.returnType == pluginContext.irBuiltIns.unitType) {
         +costExit(pluginContext, irFunction, startTime)
         return@irBlock

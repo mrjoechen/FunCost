@@ -37,7 +37,7 @@ class FunCostCommandLineProcessor: CommandLineProcessor {
                 allowMultipleOccurrences = false
             ),
             CliOption(
-                optionName = FunCostPlugin.OPTION_SHOW_RETURN,
+                optionName = FunCostPlugin.OPTION_SHOW_THREAD_NAME,
                 valueDescription = "true|false",
                 description = "show thread name",
                 required = false,

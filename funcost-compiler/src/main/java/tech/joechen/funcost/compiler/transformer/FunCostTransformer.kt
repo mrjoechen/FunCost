@@ -41,10 +41,10 @@ class FunCostTransformer(
     private fun irAddCost(irFunction: IrFunction, irBody: IrBody): IrBody {
 
         return DeclarationIrBuilder(pluginContext, irFunction.symbol).irBlockBody {
-            +costEnter(pluginContext, irFunction)
 
             val thread = irTemporary(irCall(pluginContext.threadClass()!!.currentThreadFunc()))
 
+            +costEnter(pluginContext, irFunction, thread)
             val startTime = irTemporary(irCall(pluginContext.markNowFunc()).also {
                 it.dispatchReceiver = irGetObject(pluginContext.monotonicClass())
             })
@@ -52,7 +52,7 @@ class FunCostTransformer(
                 for(statement in irBody.statements) {
                     +statement
                 }
-            }.transform(CostTimeReturnTransformer(pluginContext, irFunction, startTime, thread), null)
+            }.transform(CostTimeReturnTransformer(pluginContext, irFunction, startTime), null)
         }
     }
 }

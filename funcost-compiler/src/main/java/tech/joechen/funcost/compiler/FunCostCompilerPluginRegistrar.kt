@@ -17,16 +17,16 @@ class FunCostCompilerPluginRegistrar: CompilerPluginRegistrar() {
 
     override fun ExtensionStorage.registerExtensions(configuration: CompilerConfiguration) {
         logger = Logger(configuration.get(CLIConfigurationKeys.ORIGINAL_MESSAGE_COLLECTOR_KEY)!!)
-        logger.info("registerExtensions")
+        logger.log("registerExtensions")
         val enable = configuration.get(FunCostPlugin.ARG_ENABLE, "true")
         val showInputParam = configuration.get(FunCostPlugin.ARG_SHOW_INPUT_PARAM, "true")
         val showReturn = configuration.get(FunCostPlugin.ARG_SHOW_RETURN, "true")
         val showThreadName = configuration.get(FunCostPlugin.ARG_SHOW_THREAD_NAME, "true")
 
-        logger.info("enable: $enable")
-        logger.info("showInputParam: $showInputParam")
-        logger.info("showReturn: $showReturn")
-        logger.info("showThreadName: $showThreadName")
+        logger.log("enable: $enable")
+        logger.log("showInputParam: $showInputParam")
+        logger.log("showReturn: $showReturn")
+        logger.log("showThreadName: $showThreadName")
         IrGenerationExtension.registerExtension(FunCostIrExtension())
     }
 }

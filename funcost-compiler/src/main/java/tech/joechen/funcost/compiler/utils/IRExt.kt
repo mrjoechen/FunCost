@@ -13,6 +13,8 @@ import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
 import org.jetbrains.kotlin.ir.util.functions
 import org.jetbrains.kotlin.name.FqName
 
+const val TAG = "[FunCost]"
+
 @OptIn(FirIncompatiblePluginAPI::class)
 fun IrPluginContext.printlnFunc(): IrSimpleFunctionSymbol = referenceFunctions(FqName("kotlin.io.println")).single {
   val parameters = it.owner.valueParameters
@@ -43,18 +45,26 @@ fun IrPluginContext.threadNameFunc() = referenceFunctions(FqName("java.lang.Thre
 
 fun IrBuilderWithScope.costEnter(
   pluginContext: IrPluginContext,
-  function: IrFunction
+  function: IrFunction,
+  thread: IrValueDeclaration? = null
 ): IrCall {
   println("costEnter:")
   val concat = irConcat() // 拼接目标函数信息 【方法名（参数1，参数2 ... 参数n）】
-  concat.addArgument(irString("⇢ ${function.name}("))
+  concat.addArgument(irString("$TAG ⇢ ${function.name}("))
   function.valueParameters.forEachIndexed { index, irValueParameter ->
     if (index > 0) concat.addArgument(irString(", "))
     concat.addArgument(irString("${irValueParameter.name}="))
     concat.addArgument(irGet(irValueParameter)) // irGet 获取参数具体值是什么
   }
-  concat.addArgument(irString(") \nstart function body ..."))
+  concat.addArgument(irString(")"))
 
+  thread?.apply {
+    concat.addArgument(irString(" on Thread ["))
+    concat.addArgument(irCall(pluginContext.threadNameFunc()).also {
+      it.dispatchReceiver = irGet(thread)
+    })
+    concat.addArgument(irString("]"))
+  }
   return irCall(pluginContext.printlnFunc()).also { //调用 println()
     it.putValueArgument(0, concat)
   }
@@ -68,7 +78,7 @@ fun IrBuilderWithScope.costExit(
 ): IrCall {
   println("costExit:")
   val concat = irConcat()
-  concat.addArgument(irString("end function body\n ⇠ ${function.name} costs ["))
+  concat.addArgument(irString("$TAG ⇠ ${function.name} costs ["))
   concat.addArgument(irCall(pluginContext.elapsedNowFunc()).also { // 调用 elapsedNow()
     it.dispatchReceiver = irGet(startTime) // 通过 irGet 拿到调用者
   })
@@ -85,11 +95,12 @@ fun IrBuilderWithScope.costExit(
 
 fun IrBuilderWithScope.threadName(
   pluginContext: IrPluginContext,
+  function: IrFunction,
   thread: IrValueDeclaration,
 ): IrCall {
   println("threadName:")
   val concat = irConcat()
-  concat.addArgument(irString("on Thread ["))
+  concat.addArgument(irString("$TAG ${function.name} on Thread ["))
   concat.addArgument(irCall(pluginContext.threadNameFunc()).also {
     it.dispatchReceiver = irGet(thread)
   })
